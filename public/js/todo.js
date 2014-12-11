@@ -22,4 +22,9 @@ $(function(){
       $(this).parent().css("text-decoration","none");
     }
   })
+
+  var totalCheckbox = $("input:checkbox").length;
+  var checked = $("input:checkbox:checked").length;
+
+  $('.list-box').append(totalCheckbox);
 });
