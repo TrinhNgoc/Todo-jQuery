@@ -7,7 +7,7 @@ $(function(){
     if( e.keyCode == 13 ){
       var newListItem = input.val();
       var checkbox = "<input type=checkbox>";
-      $( ".list" ).append( "<li><span>" + checkbox + newListItem + "</span></li>" );
+      $( ".list" ).append( "<li>" + checkbox + "<span>" + newListItem + "</span></li>" );
       $( this ).val(""); 
       // $( "li" ).append( "<input type=checkbox>" );
     }
@@ -42,7 +42,7 @@ $(function(){
 
   $('button#save').click(function(e){
     var list = [];
-    $("span").each(function(i, obj) {
+    $(".list-box ul li").each(function(i, obj) {
       list.push({
         index : i,
         title : $(obj).find("span").html(),
