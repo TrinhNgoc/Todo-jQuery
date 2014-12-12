@@ -1,4 +1,14 @@
 $(function(){
+  // Autoload the save file
+  $.get("/todo_save.txt", function(data) {
+    var list_items = jQuery.parseJSON(data);
+    for (var i = 0; i < list_items.length; i++) {
+      var new_checkbox = "<input type=checkbox>";
+      var isChecked = "";
+      $( ".list" ).append("<li>" + new_checkbox + list_items[i].title + "</li>");
+
+    }
+  });
 
   var input = $( "#input" );
 
@@ -14,18 +24,18 @@ $(function(){
   });
 
   $('body').on("click", "input:checkbox", function() {
+    var checkedCheckbox = ($("input:checked").length);
+    var totalCheckbox = $("input:checkbox").length;
+    var uncheckedbox = totalCheckbox - checkedCheckbox;
     if(this.checked) {
       // alert("Checked!");
       $(this).parent().css("text-decoration","line-through");
-      var checkedCheckbox = ($("input:checked").length);
+      // var checkedCheckbox = ($("input:checked").length);
       $(".counter").text(checkedCheckbox + " items completed");
     }
     else {
       // alert("Unchecked!");
       $(this).parent().css("text-decoration","none");
-      var checkedCheckbox = ($("input:checked").length);
-      var totalCheckbox = $("input:checkbox").length;
-      var uncheckedbox = totalCheckbox - checkedCheckbox;
       $(".items-left").text( uncheckedbox + (uncheckedbox === 0 ? " item" : " items") + " left");
     }
   })
