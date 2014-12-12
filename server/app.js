@@ -10,8 +10,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.post('/save', function (req, res) {
 
   console.log("user sent post request");
-  console.log("Hamster!");
   console.log( req.body );
+  saveToDoList(req.body.todo_json_data);
   res.send("ok");
    
 });
@@ -25,8 +25,12 @@ var server = app.listen(3000, function () {
 
 });
 
-fs.writeFile('./meow', 'Hello World!', function (err) {
-  if (err) return console.log(err);
-  console.log('Hello World > index.html');
-});
+function saveToDoList (content) {
+
+  fs.writeFile('./public/todo_save.json', content, function (err) {
+    if (err) return console.log(err);
+    console.log('Successfully saved todo_save.json');
+  });
+
+}
 //If filename is not define, it will create a new file
