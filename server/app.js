@@ -1,12 +1,16 @@
 var express = require('express');
+var bodyParser = require('body-parser');
 var app = express();
 
+
 app.use(express.static('public'));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post('/save', function (req, res) {
 
   console.log("user sent post request");
   console.log("Hamster!");
+  console.log( req.body );
   res.send("ok");
    
 });

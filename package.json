@@ -16,6 +16,7 @@
     "url": "https://github.com/TrinhNgoc/Todo-jQuery/issues"
   },
   "dependencies": {
-    "express": "~4.10.5"
+    "express": "~4.10.5",
+    "body-parser": "~1.10.0"
   }
 }
