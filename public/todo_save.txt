@@ -1,1 +1,1 @@
-[{"index":0,"title":"one","completed":false},{"index":1,"title":"two ","completed":false},{"index":2,"title":"three","completed":false}]
+[{"index":0,"title":"one","completed":false},{"index":1,"title":"two","completed":false},{"index":2,"title":"three","completed":false}]

@@ -4,7 +4,6 @@ $(function(){
     var list_items = jQuery.parseJSON(data);
     for (var i = 0; i < list_items.length; i++) {
       var new_checkbox = "<input type=checkbox>";
-      var isChecked = "";
       $( ".list" ).append("<li>" + new_checkbox + list_items[i].title + "</li>");
 
     }
@@ -39,16 +38,6 @@ $(function(){
       $(".items-left").text( uncheckedbox + (uncheckedbox === 0 ? " item" : " items") + " left");
     }
   })
-
-  // var itemsLeft = function () {
-  //   var totalCheckbox = $("input:checkbox").length;
-  //   $(".list").html( "<div>" + totalCheckbox + (totalCheckbox === 1 ? " item" : " items") + " left" + "</div>");
-  // };
-  // itemsLeft();
-
-  // var checkedCheckbox = $("input:checkbox:checked").length;
-
-  // $('.list-box').append(totalCheckbox);
 
   $('button#save').click(function(e){
     var list = [];
