@@ -52,7 +52,7 @@ $(function(){
 
 
     var json = JSON.stringify(list);
-    console.log(json);
+    // console.log(json);
 
     $.post("/save", 
       {

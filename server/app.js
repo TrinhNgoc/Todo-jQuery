@@ -3,13 +3,10 @@ var app = express();
 
 app.use(express.static('public'));
 
-// app.get('/', function (req, res) {
-//   res.send('Hello World!')
-// })
-
 app.post('/save', function (req, res) {
 
   console.log("user sent post request");
+  console.log("Hamster!");
   res.send("ok");
    
 });
