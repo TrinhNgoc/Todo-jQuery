@@ -1,27 +1,34 @@
-var express = require('express');
-var bodyParser = require('body-parser');
 var fs = require('fs');
-var MongoClient = require('mongodb').MongoClient;
+var bodyParser = require('body-parser');
+var express = require('express');
+var mongodb = require('mongodb');
+var MongoClient = mongodb.MongoClient;
+var ObjectID = mongodb.ObjectID;
 var app = express();
+var connection_string = 'mongodb://localhost:27017/todosdb';
 
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.post('/item', function (req, res) {
+function connect_to_db ( cb ) {
 
-  // console.log("user sent post request");
-  // console.log( req.body );
-  // saveToDoList(req.body.todo_json_data);
-  // res.send("ok");
-
-  // Note the db name todosdb in the connection string
-  MongoClient.connect('mongodb://localhost:27017/todosdb', function(err, db) {
+    // Note the db name todosdb in the connection string
+    MongoClient.connect(connection_string, function(err, db) {
     if (err) {
-    throw err;
+      throw err;
     }
 
     // Find the collection todos (or create it if it doesn't already exist)
     var collection = db.collection('todos');
+
+    cb( collection );
+
+  });
+};
+
+app.post('/item', function (req, res) {
+
+  connect_to_db( function ( collection ) {
 
     // Insert a document into the collection
     collection.insert(req.body.new_item, function(err, arrayItem) {
@@ -40,27 +47,46 @@ app.post('/item', function (req, res) {
         console.log(results);
 
         // Close the db connection
-        db.close();
+        collection.db.close();
       });
+
     }); // End of function(err, docs) callback
+
   });
 
 });
 
 app.get('/items', function (req, res) {
 
-  MongoClient.connect('mongodb://localhost:27017/todosdb', function(err, db) {
-    if (err) {
-      throw err;
-    }
-
-    var collection = db.collection('todos');
+  connect_to_db( function ( collection ) {
 
     collection.find().toArray(function(err, results) {
+
+      console.log("Found the following records");
+      console.dir(results);
       res.send(results);
+      collection.db.close();
+
     });
+
   });
 
+});
+
+app.delete('/items/:item_id', function (req, res) {
+
+  connect_to_db( function ( collection ) {
+
+    var _id = req.params.item_id;
+
+    collection.remove({"_id": new ObjectID( _id )}, function (err, result) {
+      if(err) throw err;
+
+      res.json({ success: "success"});
+
+      collection.db.close();
+    });
+  });
 });
 
 var server = app.listen(3000, function () {
