@@ -2,13 +2,26 @@ $(function(){
   // Autoload the save file
   $.get("/items", function(todos) {
     for (var i = 0; i < todos.length; i++) {
-      var new_item = $("<li></li>");
-      var new_checkbox = "<input type=checkbox>";
 
-      new_item.append( new_checkbox );
-      new_item.append( todos[i].title );
+      var new_list_item = $("<li>", {
+        class: "list_items"
+      });
+      var new_checkbox = $("<input>", {
+        type: "checkbox"
+      });
+      var new_list_label = $("<span>", {
+        text: todos[i].title
+      });
 
-      $( ".list" ).append(new_item);
+      if(todos[i].completed) {
+        new_checkbox.attr("checked","checked");
+      }
+
+      new_list_item
+        .append( new_checkbox )
+        .append( new_list_label );
+
+      $( ".list" ).append(new_list_item);
     }
 
   });
@@ -17,14 +30,27 @@ $(function(){
 
   input.keydown(function(e){
     if( e.keyCode == 13 ){
-      var new_list_item = $("<li></li>");
-      var checkbox = "<input type=checkbox>";
-      var user_input = input.val();
 
-      new_list_item.append( checkbox );
-      new_list_item.append( "<span>" + user_input + "</span>" )
-      $( ".list" ).append( new_list_item );
-      $( this ).val(""); //Clears input after pressing enter
+      var list_item = $("<li>", {
+        class: "list_items"
+      });
+      var checkbox = $("<input>", {
+        type: "checkbox"
+      });
+      var user_input = input.val();
+      var list_label = $("<span>", {
+        text: user_input
+      });
+
+      list_item
+        .append( checkbox )
+        .append( list_label );
+
+      $( ".list" ).append( list_item );
+
+      //Clears input after pressing enter
+      $( this ).val(""); 
+      
 
       var post_data = {
           new_item : {
