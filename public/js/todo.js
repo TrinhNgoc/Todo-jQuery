@@ -1,36 +1,41 @@
 $(function(){
+
+  function click_delete_item_handler (e) {
+    var button = $(e.currentTarget);
+    var parent_li = button.closest("li")
+    var object_id = parent_li.data("object-id")
+
+    $.ajax ( "/items/" + object_id, 
+      {
+        type : "DELETE",
+        success: function(data) {
+          parent_li.remove();
+          console.log('data', data);
+        }
+      }
+    );
+  }
+
   // Autoload the save file
   $.get("/items", function(todos) {
     for (var i = 0; i < todos.length; i++) {
+
+      var new_checkbox = $("<input>", {
+        type: "checkbox"
+      });
 
       var new_list_item = $("<li>", {
         class: "list_items",
         "data-object-id" : todos[i]._id
       });
 
-      var new_checkbox = $("<input>", {
-        type: "checkbox"
-      });
-
-      var new_delete = $("<button>", {
-        text: "[x]",
-        click: function (e) {
-          var button = $(e.currentTarget);
-          var object_id = button.closest("li").data("object-id")
-
-          $.ajax ( "/items/" + object_id, 
-            {
-              type : "DELETE",
-              success: function(data) {
-                console.log('data', data);
-              }
-            }
-          );
-        }
-      });
-
       var new_list_label = $("<span>", {
         text: todos[i].title
+      });
+
+      var new_list_delete = $("<button>", {
+        text: "X",
+        click: click_delete_item_handler
       });
 
       if(todos[i].completed === "true") {
@@ -40,7 +45,7 @@ $(function(){
       new_list_item
         .append( new_checkbox )
         .append( new_list_label )
-        .append( new_delete );
+        .append( new_list_delete );
 
       $( ".list" ).append(new_list_item);
     }
@@ -53,13 +58,12 @@ $(function(){
 
     if( e.keyCode == 13 ){
 
-      var list_item = $("<li>", {
-        class: "list_items",
-        "data-object-id" : user_input._id
-      });
-
       var checkbox = $("<input>", {
         type: "checkbox"
+      });
+
+      var list_item = $("<li>", {
+        class: "list_items"
       });
 
       var user_input = input.val();
@@ -68,26 +72,15 @@ $(function(){
         text: user_input
       });
 
-      // var new_delete = $("<button>", {
-      //   text: "[x]",
-      //   click: function (e) {
-      //     var button = $(e.currentTarget);
-      //     var object_id = button.closest("li").data("object-id")
-
-      //     $.ajax ( "/items/" + object_id, 
-      //       {
-      //         type : "DELETE",
-      //         success: function(data) {
-      //           console.log('data', data);
-      //         }
-      //       }
-      //     );
-      //   }
-      // });
+      var list_delete = $("<button>", {
+        text: "X",
+        click: click_delete_item_handler
+      });
 
       list_item
         .append( checkbox )
-        .append( list_label );
+        .append( list_label )
+        .append( list_delete );
 
       $( ".list" ).append( list_item );
 
@@ -97,13 +90,15 @@ $(function(){
 
       var post_data = {
           new_item : {
-              title : "my task",
+              title : user_input,
               completed : false
           }
       }
 
-      $.post('/item', post_data, function(data){ });  
-      
+      $.post('/item', post_data, function(new_todo_id){
+          console.log(post_data);
+          // $('list_item').append("data-object-id : " + new_todo_id );
+      });  
     }
   });
 

@@ -1,4 +1,3 @@
-var fs = require('fs');
 var bodyParser = require('body-parser');
 var express = require('express');
 var mongodb = require('mongodb');
@@ -73,6 +72,30 @@ app.get('/items', function (req, res) {
 
 });
 
+app.put('/items/:id/:status', function(req, res) {
+  connect_to_db(function ( collection ) {
+    var todo_id = req.params.id;
+    var todo_completed_status = req.params.status;
+
+    //collection.update(criteria, objNew, options, [callback])
+    collection.update(
+      { '_id' : new ObjectID(todo_id)},             //Criteria
+      {
+        $set: {
+          completed: todo_completed_status
+        }
+      },                                            // objNew
+      {w:1},                                        // options
+      function(err) {                               // callback
+        if (err) console.warn(err.message);
+        else console.log('successfully updated');
+
+        res.send( status );
+      }
+    );
+  });
+});
+
 app.delete('/items/:item_id', function (req, res) {
 
   connect_to_db( function ( collection ) {
@@ -82,9 +105,9 @@ app.delete('/items/:item_id', function (req, res) {
     collection.remove({"_id": new ObjectID( _id )}, function (err, result) {
       if(err) throw err;
 
+      collection.db.close();
       res.json({ success: "success"});
 
-      collection.db.close();
     });
   });
 });
