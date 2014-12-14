@@ -1,64 +1,62 @@
 $(function(){
   // Autoload the save file
-  $.get("/todo_save.txt", function(data) {
-    var list_items = jQuery.parseJSON(data);
-    for (var i = 0; i < list_items.length; i++) {
+  $.get("/items", function(todos) {
+    for (var i = 0; i < todos.length; i++) {
+      var new_item = $("<li></li>");
       var new_checkbox = "<input type=checkbox>";
-      $( ".list" ).append("<li>" + new_checkbox + list_items[i].title + "</li>");
 
+      new_item.append( new_checkbox );
+      new_item.append( todos[i].title );
+
+      $( ".list" ).append(new_item);
     }
+
   });
 
   var input = $( "#input" );
 
-
   input.keydown(function(e){
     if( e.keyCode == 13 ){
-      var newListItem = input.val();
+      var new_list_item = $("<li></li>");
       var checkbox = "<input type=checkbox>";
-      $( ".list" ).append( "<li>" + checkbox + "<span>" + newListItem + "</span></li>" );
-      $( this ).val(""); 
-      // $( "li" ).append( "<input type=checkbox>" );
+      var user_input = input.val();
+
+      new_list_item.append( checkbox );
+      new_list_item.append( "<span>" + user_input + "</span>" )
+      $( ".list" ).append( new_list_item );
+      $( this ).val(""); //Clears input after pressing enter
+
+      var post_data = {
+          new_item : {
+              title : "my task",
+              completed : false
+          }
+      }
+
+      $.post('/item', post_data, function(data){ });  
+      
     }
   });
 
   $('body').on("click", "input:checkbox", function() {
+
     var checkedCheckbox = ($("input:checked").length);
     var totalCheckbox = $("input:checkbox").length;
     var uncheckedbox = totalCheckbox - checkedCheckbox;
+
     if(this.checked) {
       // alert("Checked!");
       $(this).parent().css("text-decoration","line-through");
-      // var checkedCheckbox = ($("input:checked").length);
       $(".counter").text(checkedCheckbox + " items completed");
     }
     else {
       // alert("Unchecked!");
       $(this).parent().css("text-decoration","none");
-      $(".items-left").text( uncheckedbox + (uncheckedbox === 0 ? " item" : " items") + " left");
+      $(".items-left").text( uncheckedbox + (uncheckedbox === 1 ? " item" : " items") + " left");
     }
   })
 
-  $('button#save').click(function(e){
-    var list = [];
-    $(".list-box ul li").each(function(i, obj) {
-      list.push({
-        index : i,
-        title : $(obj).find("span").html(),
-        completed: $(obj).find("input:checked").length > 0
-      });
-    });
 
-
-    var json = JSON.stringify(list);
-    // console.log(json);
-
-    $.post("/save", 
-      {
-        todo_json_data : json
-      }
-    );
-  }); 
 
 
 });
