@@ -40,7 +40,7 @@ $(function(){
 
       if(todos[i].completed === "true") {
         new_checkbox.attr("checked","checked");
-      }
+      };
 
       new_list_item
         .append( new_checkbox )
@@ -96,8 +96,8 @@ $(function(){
       }
 
       $.post('/item', post_data, function(new_todo_id){
-          console.log(post_data);
-          // $('list_item').append("data-object-id : " + new_todo_id );
+          console.log(new_todo_id);
+          $(".list_items").attr("data-object-id", new_todo_id);
       });  
     }
   });
