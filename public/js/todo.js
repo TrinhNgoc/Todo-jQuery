@@ -16,12 +16,29 @@ $(function(){
     );
   }
 
+   function change_completed_status (e) {
+    var checkbox = $( e.currentTarget );
+    var parent_li = checkbox.closest("li");
+    var object_id = parent_li.data("object-id");
+    
+    $.ajax('/items/' + object_id + '/' + checkbox.prop("checked"),
+      {
+        type : "PUT",
+        success : function (data) {
+          console.log('data', data);
+        }
+      }
+    );
+
+  }
+
   // Autoload the save file
   $.get("/items", function(todos) {
     for (var i = 0; i < todos.length; i++) {
 
       var new_checkbox = $("<input>", {
-        type: "checkbox"
+        type: "checkbox",
+        change: change_completed_status
       });
 
       var new_list_item = $("<li>", {
@@ -40,6 +57,7 @@ $(function(){
 
       if(todos[i].completed === "true") {
         new_checkbox.attr("checked","checked");
+        new_list_item.css("text-decoration","line-through");
       };
 
       new_list_item
@@ -96,7 +114,7 @@ $(function(){
       }
 
       $.post('/item', post_data, function(new_todo_id){
-          console.log(new_todo_id);
+          // console.log(new_todo_id);
           $(".list_items").attr("data-object-id", new_todo_id);
       });  
     }

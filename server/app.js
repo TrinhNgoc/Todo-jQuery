@@ -90,7 +90,7 @@ app.put('/items/:id/:status', function(req, res) {
         if (err) console.warn(err.message);
         else console.log('successfully updated');
 
-        res.send( status );
+        // res.send( status );
       }
     );
   });
