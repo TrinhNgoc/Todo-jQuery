@@ -2,8 +2,8 @@ $(function(){
 
   function click_delete_item_handler (e) {
     var button = $(e.currentTarget);
-    var parent_li = button.closest("li")
-    var object_id = parent_li.data("object-id")
+    var parent_li = button.closest("li");
+    var object_id = parent_li.data("object-id");
 
     $.ajax ( "/items/" + object_id, 
       {
@@ -14,7 +14,7 @@ $(function(){
         }
       }
     );
-  }
+  };
 
    function change_completed_status (e) {
     var checkbox = $( e.currentTarget );
@@ -29,14 +29,13 @@ $(function(){
         }
       }
     );
-
-  }
+  };
 
   // Autoload the save file
   $.get("/items", function(todos) {
     for (var i = 0; i < todos.length; i++) {
 
-      var new_checkbox = $("<input>", {
+      var new_list_checkbox = $("<input>", {
         type: "checkbox",
         change: change_completed_status
       });
@@ -56,12 +55,12 @@ $(function(){
       });
 
       if(todos[i].completed === "true") {
-        new_checkbox.attr("checked","checked");
+        new_list_checkbox.attr("checked","checked");
         new_list_item.css("text-decoration","line-through");
       };
 
       new_list_item
-        .append( new_checkbox )
+        .append( new_list_checkbox )
         .append( new_list_label )
         .append( new_list_delete );
 
@@ -76,8 +75,9 @@ $(function(){
 
     if( e.keyCode == 13 ){
 
-      var checkbox = $("<input>", {
-        type: "checkbox"
+      var list_checkbox = $("<input>", {
+        type: "checkbox",
+        change: change_completed_status
       });
 
       var list_item = $("<li>", {
@@ -96,7 +96,7 @@ $(function(){
       });
 
       list_item
-        .append( checkbox )
+        .append( list_checkbox )
         .append( list_label )
         .append( list_delete );
 
@@ -126,15 +126,19 @@ $(function(){
     var totalCheckbox = $("input:checkbox").length;
     var uncheckedbox = totalCheckbox - checkedCheckbox;
 
+    // Checks how many items are completed
+    $(".counter").text(checkedCheckbox + (checkedCheckbox === 1 ? " item" : " items") + " completed");
+
+    // Checks how many items are not completed
+    $(".items-left").text( uncheckedbox + (uncheckedbox === 1 ? " item" : " items") + " left");
+    
     if(this.checked) {
       // alert("Checked!");
       $(this).parent().css("text-decoration","line-through");
-      $(".counter").text(checkedCheckbox + " items completed");
     }
     else {
       // alert("Unchecked!");
       $(this).parent().css("text-decoration","none");
-      $(".items-left").text( uncheckedbox + (uncheckedbox === 1 ? " item" : " items") + " left");
     }
   })
 
